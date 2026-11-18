@@ -2,25 +2,59 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #484848;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-brand: #f20411;
+  --color-ink: #0f0000;
+  --color-heading: #000000;
+  --color-body: #484848;
+  --color-blush: #f3dddf;
+  --color-paper: #f6f3f3;
+  --color-nav: #fbf6f6;
+  --color-line: #ece7e7;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: #f20411;
+  color: #fff;
+}
+
+input[type="range"].dual-range {
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+  height: 18px;
+}
+
+input[type="range"].dual-range::-webkit-slider-thumb {
+  appearance: none;
+  pointer-events: auto;
+  height: 18px;
+  width: 18px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #f20411;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+  cursor: pointer;
+}
+
+input[type="range"].dual-range::-moz-range-thumb {
+  pointer-events: auto;
+  height: 18px;
+  width: 18px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #f20411;
+  cursor: pointer;
 }
