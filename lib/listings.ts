@@ -1,5 +1,6 @@
 export type Intent = "sale" | "rent";
-export type Kind = "bungalow" | "apartment" | "duplex" | "terrace";
+export type Kind = "bungalow" | "apartment" | "semi-detached" | "detached" | "flat" | "terrace";
+export type RentPeriod = "month" | "year";
 export type HouseVariant = "bungalow" | "terrace" | "duplex";
 
 export type Listing = {
@@ -29,8 +30,30 @@ export function listingImage(listing: Listing) {
   return listing.image ?? propertyImages[listing.variant];
 }
 
-export const PRICE_FLOOR = 0;
-export const PRICE_CEILING = 4_950_000_000;
+export const PRICE_FROM = 5_000;
+export const SALE_PRICE_MIN = 1_000_000;
+export const SALE_PRICE_MAX = 4_950_000_000;
+export const LETTING_MONTH_MIN = 20_000;
+export const LETTING_MONTH_MAX = 5_000_000;
+export const LETTING_YEAR_MIN = 250_000;
+export const LETTING_YEAR_MAX = 50_000_000;
+
+export function priceBounds(mode: "sale" | "letting-month" | "letting-year") {
+  if (mode === "letting-month") {
+    return { min: Math.max(PRICE_FROM, LETTING_MONTH_MIN), max: LETTING_MONTH_MAX, step: 5_000 };
+  }
+  if (mode === "letting-year") {
+    return { min: Math.max(PRICE_FROM, LETTING_YEAR_MIN), max: LETTING_YEAR_MAX, step: 50_000 };
+  }
+  return { min: Math.max(PRICE_FROM, SALE_PRICE_MIN), max: SALE_PRICE_MAX, step: 1_000_000 };
+}
+
+export function kindLabel(kind: Kind) {
+  if (kind === "semi-detached") return "Semi detached duplex";
+  if (kind === "detached") return "Detached duplex";
+  if (kind === "flat") return "Flat";
+  return kind.charAt(0).toUpperCase() + kind.slice(1);
+}
 
 export function formatNaira(value: number) {
   return `N${Math.round(value).toLocaleString("en-NG")}`;
@@ -114,7 +137,7 @@ export const listings: Listing[] = [
     title: "4 Bedroom Duplex in Wuse, Abuja Nigeria",
     price: 180_000_000,
     intent: "sale",
-    kind: "duplex",
+    kind: "semi-detached",
     company: "Perfect Constructions",
     area: 640,
     rooms: 4,
@@ -127,23 +150,23 @@ export const listings: Listing[] = [
   },
   {
     id: "lekki-duplex",
-    title: "5 Bedroom Duplex in Lekki, Lagos Nigeria",
+    title: "5 Bedroom Detached Duplex in Lagos - Island, Nigeria",
     price: 450_000_000,
     intent: "sale",
-    kind: "duplex",
+    kind: "detached",
     company: "Perfect Constructions",
     area: 820,
     rooms: 5,
     baths: 5,
     beds: 5,
-    city: "Lekki, Lagos",
+    city: "Lagos - Island",
     variant: "duplex",
     image: "/properties/duplex.png",
     featured: true,
   },
   {
     id: "ikoyi-apartment",
-    title: "3 Bedroom Apartment in Ikoyi",
+    title: "3 Bedroom Apartment in Lagos - Island",
     price: 320_000_000,
     intent: "sale",
     kind: "apartment",
@@ -152,12 +175,12 @@ export const listings: Listing[] = [
     rooms: 3,
     baths: 3,
     beds: 3,
-    city: "Ikoyi, Lagos",
+    city: "Lagos - Island",
     variant: "terrace",
   },
   {
     id: "ibadan-terrace",
-    title: "4 Bedroom Terrace in Bodija Ibadan",
+    title: "4 Bedroom Terrace in Oyo",
     price: 75_000_000,
     intent: "sale",
     kind: "terrace",
@@ -166,7 +189,7 @@ export const listings: Listing[] = [
     rooms: 4,
     baths: 3,
     beds: 4,
-    city: "Ibadan",
+    city: "Oyo",
     variant: "terrace",
   },
   {
@@ -185,7 +208,7 @@ export const listings: Listing[] = [
   },
   {
     id: "lekki-rent",
-    title: "2 Bedroom Apartment in Lekki",
+    title: "2 Bedroom Apartment in Lagos - Mainland",
     price: 4_500_000,
     intent: "rent",
     kind: "apartment",
@@ -194,7 +217,7 @@ export const listings: Listing[] = [
     rooms: 2,
     baths: 2,
     beds: 2,
-    city: "Lekki, Lagos",
+    city: "Lagos - Mainland",
     variant: "duplex",
   },
   {
@@ -213,7 +236,7 @@ export const listings: Listing[] = [
   },
   {
     id: "ph-rent",
-    title: "3 Bedroom Bungalow in GRA Port Harcourt",
+    title: "3 Bedroom Bungalow in Rivers",
     price: 3_200_000,
     intent: "rent",
     kind: "bungalow",
@@ -222,43 +245,43 @@ export const listings: Listing[] = [
     rooms: 3,
     baths: 2,
     beds: 3,
-    city: "Port Harcourt",
+    city: "Rivers",
     variant: "bungalow",
   },
   {
     id: "ikoyi-rent",
-    title: "4 Bedroom Duplex in Old Ikoyi",
+    title: "4 Bedroom Detached Duplex in Jos",
     price: 15_000_000,
     intent: "rent",
-    kind: "duplex",
+    kind: "detached",
     company: "Palm Court Homes",
     area: 480,
     rooms: 4,
     baths: 4,
     beds: 5,
-    city: "Ikoyi, Lagos",
+    city: "Jos",
     variant: "duplex",
   },
   {
     id: "ibadan-rent",
-    title: "2 Bedroom Terrace in Jericho Ibadan",
+    title: "2 Bedroom Flat in Jos",
     price: 1_800_000,
     intent: "rent",
-    kind: "terrace",
+    kind: "flat",
     company: "ePropertyTree Verified",
     area: 140,
     rooms: 2,
     baths: 1,
     beds: 2,
-    city: "Ibadan",
+    city: "Jos",
     variant: "terrace",
   },
   {
     id: "kuje-rent",
-    title: "1 Bedroom Apartment in Kuje",
+    title: "1 Bedroom Flat in Kuje",
     price: 1_200_000,
     intent: "rent",
-    kind: "apartment",
+    kind: "flat",
     company: "Teckdock Africa Constructions",
     area: 55,
     rooms: 1,
@@ -273,11 +296,32 @@ export function getListing(id: string) {
   return listings.find((listing) => listing.id === id);
 }
 
-export const categories = ["Bungalow", "Duplex", "Apartment", "Terrace"] as const;
+export const categories = [
+  "Bungalow",
+  "Semi detached duplex",
+  "Detached duplex",
+  "Flat",
+  "Apartment",
+  "Terrace",
+] as const;
+
+export function categoryToKind(category: string): Kind | null {
+  const map: Record<string, Kind> = {
+    Bungalow: "bungalow",
+    "Semi detached duplex": "semi-detached",
+    "Detached duplex": "detached",
+    Flat: "flat",
+    Apartment: "apartment",
+    Terrace: "terrace",
+  };
+  return map[category] ?? null;
+}
+
 export const locations = [
   "Abuja (FCT)",
-  "Lekki, Lagos",
-  "Ikoyi, Lagos",
-  "Port Harcourt",
-  "Ibadan",
+  "Lagos - Island",
+  "Lagos - Mainland",
+  "Oyo",
+  "Rivers",
+  "Jos",
 ] as const;

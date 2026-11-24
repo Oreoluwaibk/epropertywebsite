@@ -10,9 +10,9 @@ export function Footer() {
         <div>
           <Logo className="h-12 w-auto" />
           <p className="mt-4 max-w-xs text-sm leading-6 text-body">
-            Property management for the way Nigeria rents.
+            To perfect property management.
             <br />
-            Built in Lagos.
+            Built in Naija, for the global market.
           </p>
           <p className="mt-4 max-w-xs text-sm leading-6 text-body">
             GM Mall, KM 46 Lekki-Epe Expressway, opposite SBI Hotel, Sangotedo, Lagos.
@@ -30,6 +30,7 @@ export function Footer() {
             <li><Link href="/" className="hover:text-heading">Home</Link></li>
             <li><Link href="/about" className="hover:text-heading">About</Link></li>
             <li><Link href="/properties" className="hover:text-heading">Properties</Link></li>
+            <li><Link href="/pricing" className="hover:text-heading">Pricing</Link></li>
             <li><Link href="/support" className="hover:text-heading">Support</Link></li>
             <li><Link href="/#download" className="hover:text-heading">Download The App</Link></li>
           </ul>

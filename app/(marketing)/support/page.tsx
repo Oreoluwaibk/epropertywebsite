@@ -10,6 +10,8 @@ export default function SupportPage() {
     <div className="bg-blush">
       <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-16">
         <h1 className="text-4xl font-extrabold text-heading sm:text-5xl">Support</h1>
+        <p className="mt-3 text-sm text-body sm:text-base">Built in Naija, for the global market.</p>
+        <p className="mt-1 text-sm font-semibold text-heading sm:text-base">To perfect property management.</p>
         <p className="mt-3 text-sm text-body sm:text-base">
           We&apos;re here to help. Most questions are answered within one business day.
         </p>
@@ -26,13 +28,13 @@ export default function SupportPage() {
               <span className="mt-1 block text-xs text-[#8d8080]">Best for account, payment or lease questions</span>
             </span>
           </a>
-          <a href="https://wa.me/2348000000000" className="flex gap-4 rounded-2xl bg-white p-5 shadow-sm">
+          <a href="https://wa.me/2348189223344" className="flex gap-4 rounded-2xl bg-white p-5 shadow-sm">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-ink text-white">
               <WhatsAppIcon className="h-5 w-5" />
             </span>
             <span>
               <span className="block font-semibold text-heading">WhatsApp</span>
-              <span className="mt-1 block text-sm text-body">+234 800 000 0000</span>
+              <span className="mt-1 block text-sm text-body">234(0)8189223344</span>
               <span className="mt-1 block text-xs text-[#8d8080]">Mon–Fri, 9am–5pm WAT</span>
             </span>
           </a>
@@ -54,7 +56,7 @@ export default function SupportPage() {
           <dl className="mt-4 space-y-2 text-sm text-body">
             <div>
               <dt className="inline font-semibold text-heading">Account &amp; Payment Issues: </dt>
-              <dd className="inline">Within 1 business day</dd>
+              <dd className="inline">3-5 business days</dd>
             </div>
             <div>
               <dt className="inline font-semibold text-heading">Privacy &amp; Data Requests: </dt>

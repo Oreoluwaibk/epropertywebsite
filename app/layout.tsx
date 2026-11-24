@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s · ePropertyTree",
   },
   description:
-    "Property management for the way Nigeria rents. Landlords, tenants, and agents on one app, with rent collection through Paystack.",
+    "To perfect property management. Built in Naija, for the global market. Landlords, tenants, and agents on one platform, with rent collection through Paystack.",
   icons: { icon: "/logo.png" },
 };
 

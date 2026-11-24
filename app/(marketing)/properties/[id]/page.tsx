@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AreaIcon, BathIcon, BedIcon, DoorIcon, PinIcon } from "@/components/Icons";
 import { PropertyPhoto } from "@/components/PropertyPhoto";
-import { formatNaira, getListing, listingImage, listings } from "@/lib/listings";
+import { formatNaira, getListing, kindLabel, listingImage, listings } from "@/lib/listings";
 
 export function generateStaticParams() {
   return listings.map((listing) => ({ id: listing.id }));
@@ -30,9 +30,9 @@ export default async function PropertyDetailPage({
 
   const facts = [
     { icon: AreaIcon, label: `${listing.area} sqm` },
-    { icon: DoorIcon, label: `${listing.rooms} Rooms` },
-    { icon: BathIcon, label: `${listing.baths} Bathrooms` },
-    { icon: BedIcon, label: `${listing.beds} Beds` },
+    { icon: DoorIcon, label: `${listing.rooms} ${listing.rooms === 1 ? "Bedroom" : "Bedrooms"}` },
+    { icon: BathIcon, label: `${listing.baths} ${listing.baths === 1 ? "Bathroom" : "Bathrooms"}` },
+    { icon: BedIcon, label: `${listing.beds} ${listing.beds === 1 ? "Bed" : "Beds"}` },
   ];
 
   return (
@@ -52,7 +52,7 @@ export default async function PropertyDetailPage({
         </div>
         <div className="lg:pt-10">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-            {listing.intent === "rent" ? "For rent" : "For sale"} · {listing.kind}
+            {listing.intent === "rent" ? "For letting" : "For sale"} · {kindLabel(listing.kind)}
           </p>
           <h1 className="mt-3 text-3xl font-extrabold leading-tight text-heading">{listing.title}</h1>
           <p className="mt-3 flex items-center gap-2 text-sm text-heading">

@@ -9,8 +9,8 @@ export default function AboutPage() {
       <article className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-body">About us</p>
         <h1 className="mt-4 text-4xl font-extrabold leading-[1.05] tracking-tight text-heading sm:text-5xl">
-          Built in Nigeria.
-          <span className="mt-1 block text-brand">For the way Nigeria rents.</span>
+          Built in Naija, for the global market.
+          <span className="mt-1 block text-brand">To perfect property management.</span>
         </h1>
         <p className="mt-6 text-base leading-7 text-body">
           ePropertyTree exists because renting in Nigeria runs on cash, WhatsApp, and trust that gets burned. We&apos;re building the software that should have been there all along.

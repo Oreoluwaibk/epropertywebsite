@@ -7,9 +7,9 @@ import { PropertyPhoto } from "./PropertyPhoto";
 export function PropertyCard({ listing }: { listing: Listing }) {
   const specs = [
     { icon: AreaIcon, label: `${listing.area} sqm` },
-    { icon: DoorIcon, label: `${listing.rooms} Rooms` },
-    { icon: BathIcon, label: `${listing.baths} Bathrooms` },
-    { icon: BedIcon, label: `${listing.beds} Beds` },
+    { icon: DoorIcon, label: `${listing.rooms} ${listing.rooms === 1 ? "Bedroom" : "Bedrooms"}` },
+    { icon: BathIcon, label: `${listing.baths} ${listing.baths === 1 ? "Bathroom" : "Bathrooms"}` },
+    { icon: BedIcon, label: `${listing.beds} ${listing.beds === 1 ? "Bed" : "Beds"}` },
   ];
 
   return (

@@ -17,7 +17,7 @@ export default function SignInPage() {
   function onSubmit(event: FormEvent) {
     event.preventDefault();
     if (!identifier.trim() || password.length < 6) {
-      setError("Enter the email or phone, and a password of at least 6 characters.");
+      setError("Enter the email or Phone, and a password of at least 6 characters.");
       return;
     }
     const saved = readAccount();
@@ -54,11 +54,11 @@ export default function SignInPage() {
         <p className="text-sm text-body">Welcome back</p>
         <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-heading">Sign in</h1>
         <p className="mt-3 text-sm leading-6 text-body">
-          Use the email or phone on your ePropertyTree account. The same password works in the mobile app.
+          Use the email or Phone on your ePropertyTree account. The same password works in the mobile app.
         </p>
         <form onSubmit={onSubmit} className="mt-8">
           <label className="text-sm text-heading" htmlFor="identifier">
-            Email or phone
+            Email or Phone
           </label>
           <input
             id="identifier"

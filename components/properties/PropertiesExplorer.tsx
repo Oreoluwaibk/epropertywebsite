@@ -14,16 +14,18 @@ import {
 } from "@/components/Icons";
 import {
   categories,
+  categoryToKind,
   formatNaira,
   listings,
   locations,
-  PRICE_CEILING,
-  PRICE_FLOOR,
+  priceBounds,
   type Intent,
   type Listing,
+  type RentPeriod,
 } from "@/lib/listings";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 8;
+type Browse = Intent | "featured";
 
 type Draft = {
   category: string;
@@ -36,21 +38,29 @@ type Draft = {
   q: string;
 };
 
+const saleBounds = priceBounds("sale");
+
 const initialDraft: Draft = {
   category: "All",
   location: "All",
   rooms: "Any",
   baths: "Any",
-  min: 40_000_000,
-  max: PRICE_CEILING,
+  min: saleBounds.min,
+  max: saleBounds.max,
   order: "featured",
   q: "",
 };
 
+function boundsFor(intent: Browse, period: RentPeriod) {
+  if (intent === "rent") return priceBounds(period === "month" ? "letting-month" : "letting-year");
+  return priceBounds("sale");
+}
+
 export function PropertiesExplorer() {
   const params = useSearchParams();
   const incoming = params.get("q") ?? "";
-  const [intent, setIntent] = useState<Intent | "apartment">("sale");
+  const [intent, setIntent] = useState<Browse>("sale");
+  const [rentPeriod, setRentPeriod] = useState<RentPeriod>("year");
   const [panel, setPanel] = useState<"filter" | "categories" | "location">("filter");
   const [draft, setDraft] = useState<Draft>({ ...initialDraft, q: incoming });
   const [applied, setApplied] = useState<Draft>({ ...initialDraft, q: incoming });
@@ -59,16 +69,22 @@ export function PropertiesExplorer() {
 
   const results = useMemo(() => {
     let next = listings.filter((listing) => {
-      if (intent === "apartment") return listing.kind === "apartment";
+      if (intent === "featured") return listing.featured;
       return listing.intent === intent;
     });
-    next = next.filter((listing) => listing.price >= applied.min && listing.price <= applied.max);
+    next = next.filter((listing) => {
+      const price = intent === "rent" && rentPeriod === "month" ? listing.price / 12 : listing.price;
+      return price >= applied.min && price <= applied.max;
+    });
     if (applied.category !== "All") {
-      next = next.filter((listing) => listing.kind === applied.category.toLowerCase());
+      const kind = categoryToKind(applied.category);
+      next = next.filter((listing) => listing.kind === kind);
     }
     if (applied.location !== "All") next = next.filter((listing) => listing.city === applied.location);
-    if (applied.rooms !== "Any") next = next.filter((listing) => listing.rooms === Number(applied.rooms));
-    if (applied.baths !== "Any") next = next.filter((listing) => listing.baths === Number(applied.baths));
+    if (applied.rooms === "5+") next = next.filter((listing) => listing.rooms >= 5);
+    else if (applied.rooms !== "Any") next = next.filter((listing) => listing.rooms === Number(applied.rooms));
+    if (applied.baths === "3+") next = next.filter((listing) => listing.baths >= 3);
+    else if (applied.baths !== "Any") next = next.filter((listing) => listing.baths === Number(applied.baths));
     if (applied.q.trim()) {
       const q = applied.q.toLowerCase();
       next = next.filter((listing) =>
@@ -78,7 +94,7 @@ export function PropertiesExplorer() {
     if (applied.order === "price-asc") next = [...next].sort((a, b) => a.price - b.price);
     if (applied.order === "price-desc") next = [...next].sort((a, b) => b.price - a.price);
     return next;
-  }, [applied, intent]);
+  }, [applied, intent, rentPeriod]);
 
   const pages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
   const safePage = Math.min(page, pages);
@@ -92,24 +108,35 @@ export function PropertiesExplorer() {
   }
 
   function reset() {
-    const next = { ...initialDraft, min: intent === "sale" ? 40_000_000 : PRICE_FLOOR };
+    const bounds = boundsFor(intent, rentPeriod);
+    const next = { ...initialDraft, min: bounds.min, max: bounds.max };
     setDraft(next);
     setApplied(next);
     setQueryInput("");
     setPage(1);
   }
 
-  function chooseIntent(next: Intent | "apartment") {
-    setIntent(next);
-    const min = next === "sale" ? 40_000_000 : PRICE_FLOOR;
-    const updated = { ...applied, min, max: PRICE_CEILING };
-    setDraft((current) => ({ ...current, min, max: PRICE_CEILING }));
-    setApplied(updated);
+  function applyBounds(nextIntent: Browse, period: RentPeriod) {
+    const bounds = boundsFor(nextIntent, period);
+    setDraft((current) => ({ ...current, min: bounds.min, max: bounds.max }));
+    setApplied((current) => ({ ...current, min: bounds.min, max: bounds.max }));
     setPage(1);
   }
 
-  const minPercent = ((draft.min - PRICE_FLOOR) / (PRICE_CEILING - PRICE_FLOOR)) * 100;
-  const maxPercent = ((draft.max - PRICE_FLOOR) / (PRICE_CEILING - PRICE_FLOOR)) * 100;
+  function chooseIntent(next: Browse) {
+    setIntent(next);
+    applyBounds(next, rentPeriod);
+  }
+
+  function choosePeriod(period: RentPeriod) {
+    setRentPeriod(period);
+    applyBounds(intent, period);
+  }
+
+  const bounds = boundsFor(intent, rentPeriod);
+  const span = bounds.max - bounds.min;
+  const minPercent = ((draft.min - bounds.min) / span) * 100;
+  const maxPercent = ((draft.max - bounds.min) / span) * 100;
 
   return (
     <div className="bg-white">
@@ -119,9 +146,9 @@ export function PropertiesExplorer() {
           <div className="flex gap-6">
             {(
               [
-                ["sale", "Sale", HouseIcon],
-                ["rent", "Rent", KeyIcon],
-                ["apartment", "Apartment", BuildingIcon],
+                ["sale", "Sales", HouseIcon],
+                ["rent", "Lettings", KeyIcon],
+                ["featured", "Featured", BuildingIcon],
               ] as const
             ).map(([value, label, Icon]) => (
               <button
@@ -181,24 +208,46 @@ export function PropertiesExplorer() {
               )}
               {panel === "filter" && (
                 <>
-                  <Accordion title="Number of Rooms">
+                  <Accordion title="Number of Bedrooms">
                     <Choice
                       value={draft.rooms}
-                      options={["Any", "1", "2", "3", "4", "5"]}
+                      options={["Any", "1", "2", "3", "4", "5+"]}
                       onChange={(rooms) => setDraft((current) => ({ ...current, rooms }))}
                     />
                   </Accordion>
                   <Accordion title="Number of Bathrooms">
                     <Choice
                       value={draft.baths}
-                      options={["Any", "1", "2", "3", "4", "5"]}
+                      options={["Any", "1", "2", "3+"]}
                       onChange={(baths) => setDraft((current) => ({ ...current, baths }))}
                     />
                   </Accordion>
                   <div className="border-b border-line py-4">
                     <p className="text-sm font-medium text-heading">Price</p>
+                    {intent === "rent" && (
+                      <div className="mt-3 flex gap-4 text-sm text-body">
+                        {(
+                          [
+                            ["month", "Month"],
+                            ["year", "Annually"],
+                          ] as const
+                        ).map(([value, label]) => (
+                          <label key={value} className="inline-flex items-center gap-2">
+                            <input
+                              type="radio"
+                              name="rent-period"
+                              checked={rentPeriod === value}
+                              onChange={() => choosePeriod(value)}
+                              className="accent-brand"
+                            />
+                            {label}
+                          </label>
+                        ))}
+                      </div>
+                    )}
                     <p className="mt-2 text-sm font-semibold text-brand">
                       {formatNaira(draft.min)} - {formatNaira(draft.max)}
+                      {intent === "rent" ? (rentPeriod === "month" ? " / month" : " / year") : ""}
                     </p>
                     <div className="relative mt-4 h-5">
                       <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-[#ececec]" />
@@ -209,9 +258,9 @@ export function PropertiesExplorer() {
                       <input
                         aria-label="Minimum price"
                         type="range"
-                        min={PRICE_FLOOR}
-                        max={PRICE_CEILING}
-                        step={1_000_000}
+                        min={bounds.min}
+                        max={bounds.max}
+                        step={bounds.step}
                         value={draft.min}
                         onChange={(event) =>
                           setDraft((current) => ({
@@ -224,9 +273,9 @@ export function PropertiesExplorer() {
                       <input
                         aria-label="Maximum price"
                         type="range"
-                        min={PRICE_FLOOR}
-                        max={PRICE_CEILING}
-                        step={1_000_000}
+                        min={bounds.min}
+                        max={bounds.max}
+                        step={bounds.step}
                         value={draft.max}
                         onChange={(event) =>
                           setDraft((current) => ({

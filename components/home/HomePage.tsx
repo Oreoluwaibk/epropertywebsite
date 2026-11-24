@@ -111,7 +111,7 @@ export function HomePage() {
           <h1 className="mt-8 text-4xl font-extrabold leading-[1.05] tracking-tight text-heading sm:text-6xl">
             Everything your property
             <span className="block">needs.</span>
-            <span className="mt-1 block text-brand">In one app.</span>
+            <span className="mt-1 block text-brand">On one platform.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-sm leading-7 text-body sm:text-base">
             Collect rent online, automate invoices and receipts, manage leases and maintenance, and fill vacant units. One platform for landlords, tenants, and agents across Nigeria.
@@ -120,7 +120,7 @@ export function HomePage() {
             <PinIcon className="ml-4 h-4 w-4 shrink-0 text-body" />
             <input
               name="q"
-              placeholder="Find your next Home: try an area like Lekki, Ikeja, Wuse or Manchester"
+              placeholder="Find your next Home: try an area like Lagos Island, Ikeja, Wuse or Jos"
               className="h-12 w-full bg-transparent px-3 text-sm text-ink outline-none placeholder:text-[#b0a4a4]"
             />
             <button type="submit" className="inline-flex h-12 shrink-0 items-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-white">

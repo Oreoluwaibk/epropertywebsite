@@ -60,6 +60,6 @@ export const faqs = [
   {
     id: "failed-payment",
     q: "A payment failed but my account was charged",
-    a: "Keep the Paystack reference and email support@ePropertyTree.com. Account and payment issues are answered within 1 business day. Do not start a second payment until support confirms the first one.",
+    a: "Keep the Paystack reference and email support@ePropertyTree.com. Account and payment issues are answered in 3-5 business days. Do not start a second payment until support confirms the first one.",
   },
 ];

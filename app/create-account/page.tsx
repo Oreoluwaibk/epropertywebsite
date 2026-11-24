@@ -75,6 +75,17 @@ function CreateAccountForm() {
               value={form.email}
               onChange={(value) => update("email", value)}
             />
+            <p className="mt-2 text-xs leading-5 text-body">
+              If you want to set up an email, open{" "}
+              <a href="https://accounts.google.com/signup" target="_blank" rel="noreferrer" className="font-semibold text-heading underline">
+                Gmail
+              </a>{" "}
+              or{" "}
+              <a href="https://login.yahoo.com/account/create" target="_blank" rel="noreferrer" className="font-semibold text-heading underline">
+                Yahoo
+              </a>
+              .
+            </p>
           </div>
           <div className="mt-4">
             <Field
